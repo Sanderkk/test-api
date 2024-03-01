@@ -1,5 +1,5 @@
 application:
-  name: TestApi
+  name: test-api
   namespace: prod
   environment: prod
   domain: sanderkk.com
@@ -8,7 +8,7 @@ application:
 
 image:
   repository: 10.0.0.45:32000
-  name: TestApi
+  name: test-api
   tag: latest
 
 ingress:

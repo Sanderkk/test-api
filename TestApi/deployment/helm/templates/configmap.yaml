@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.application.name }}
+  namespace: {{ .Values.application.namespace }}
+data:
+  ASPNETCORE_ENVIRONMENT: Production
+  KeyVaultSecrets__UseSecrets: {{ .Values.envs.keyvault.useSecrets | quote }}

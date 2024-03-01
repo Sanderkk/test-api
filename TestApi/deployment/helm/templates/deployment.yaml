@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.application.name }}
+  namespace: {{ .Values.application.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.application.name }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.application.name }}
+  template:
+    metadata:
+      labels:
+        app.payex.com/service: {{ .Values.application.name }}
+        app.kubernetes.io/name: {{ .Values.application.name }}
+        app.kubernetes.io/domain: {{ .Values.application.domain }}
+        app.kubernetes.io/managed-by: {{ .Values.application.managedBy }}
+        app.kubernetes.io/component: {{ .Values.application.component }}
+        azure.workload.identity/use: "true"
+    spec:
+      imagePullSecrets:
+      - name: acr-pull-secret
+      serviceAccountName: workload-identity-sa
+      containers:
+      - name: {{ .Values.application.name }}
+        image: {{ .Values.image.repository }}/{{ .Values.image.name }}:{{ default .Chart.AppVersion .Values.image.tag }}
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+          privileged: false
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.ingress.path }}/health
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.ingress.path }}/health
+            port: 8080
+        startupProbe:
+          httpGet:
+            path: {{ .Values.ingress.path }}/health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          timeoutSeconds: 20
+          failureThreshold: 5
+          successThreshold: 1
+        resources:
+          requests:
+            memory: 100Mi
+            cpu: 100m
+          limits:
+            memory: 150Mi
+            cpu: 200m
+        envFrom: # Variables retrieved from a configmap
+          - configMapRef:
+              name: {{ .Values.application.name }}

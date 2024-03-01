@@ -1,0 +1,14 @@
+apiVersion: v2
+name: TestApi
+version: 0.0.1
+description: Dotnet Test API
+type: application
+home: https://github.com/sanderkk/test-api
+sources:
+  - https://github.com/sanderkk/test-api
+maintainers:
+  - name: sanderkk
+    email: sander.k.kilen@gmail.com
+    url: https://github.com/sanderkk/test-api
+appVersion: "latest"
+deprecated: false

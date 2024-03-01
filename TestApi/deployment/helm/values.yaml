@@ -1,0 +1,21 @@
+application:
+  name: TestApi
+  namespace: prod
+  environment: prod
+  domain: sanderkk.com
+  managedBy: sanderkk
+  component: api
+
+image:
+  repository: 10.0.0.45:32000
+  name: TestApi
+  tag: latest
+
+ingress:
+  host: sanderkk.com
+  path: /test
+
+envs:
+  keyvault:
+    useSecrets: true
+  
